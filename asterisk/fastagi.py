@@ -14,8 +14,8 @@ Specification
 """
 
 import sys
-import asterisk.agi
 from six import PY3
+from asterisk.agi import AGI
 if PY3:
     import socketserver as SocketServer
 else:
@@ -26,19 +26,20 @@ else:
 __verison__ = 0.1
 
 # TODO: Read options from config file.
-HOST, PORT = "127.0.0.1", 4573
+# HOST, PORT = "127.0.0.1", 4573
 
 
 class FastAGI(SocketServer.StreamRequestHandler):
+
     # Close connections not finished in 5seconds.
     timeout = 5
 
+    def run(self):
+        raise NotImplementedError
+
     def handle(self):
         try:
-            agi = asterisk.agi.AGI(
-                stdin=self.rfile, stdout=self.wfile, stderr=sys.stderr
-                )
-            agi.verbose("pyst2: FastAGI on: {}:{}".format(HOST, PORT))
+            self.run()
         except TypeError as e:
             sys.stderr.write(
                 'Unable to connect to agi://{} {}\n'.format(
@@ -60,9 +61,9 @@ class FastAGI(SocketServer.StreamRequestHandler):
             sys.stderr.write("""An unknown error: {}\n""".format(str(e)))
 
 
-if __name__ == "__main__":
-    # server = SocketServer.TCPServer((HOST, PORT), FastAGI)
-    server = SocketServer.ForkingTCPServer((HOST, PORT), FastAGI)
+# if __name__ == "__main__":
+#     # server = SocketServer.TCPServer((HOST, PORT), FastAGI)
+#     server = SocketServer.ForkingTCPServer((HOST, PORT), FastAGI)
 
-    # Keep server running until CTRL-C is pressed.
-    server.serve_forever()
+#     # Keep server running until CTRL-C is pressed.
+#     server.serve_forever()
