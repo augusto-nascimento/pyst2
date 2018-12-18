@@ -29,6 +29,7 @@ import pprint
 import re
 import signal
 from six import PY3
+import json
 
 DEFAULT_TIMEOUT = 2000
 # 2sec timeout used as default for functions that take timeouts
@@ -129,8 +130,16 @@ class AGI:
         """ provides double quotes to string, converts int/bool to string """
         if isinstance(string, int):
             string = str(string)
-        if isinstance(string, float):
+        elif isinstance(string, float):
             string = str(string)
+        elif isinstance(string, dict):
+            string = json.dumps(
+                string,
+                ensure_ascii=False,
+                separators=(',', ':'),
+                default=str
+            )
+            string = string.replace('"', '\\"')
         if PY3:
             return ''.join(['"', string, '"'])
         else:
@@ -167,7 +176,7 @@ class AGI:
             command += '\n'
         self.stderr.write('    COMMAND: %s' % command)
         if PY3:
-            self.stdout.write(command.encode('utf8').decode('utf8'))
+            self.stdout.write(command.encode('utf8'))
         else:
             self.stdout.write(command)
         self.stdout.flush()
@@ -622,6 +631,12 @@ class AGI:
             result = {'result': ('1', 'hangup')}
 
         res, value = result['result']
+        if res == '1':
+            if value[0] == '{':
+                try:
+                    value = json.loads(value)
+                except Exception:
+                    pass
         return value
 
     def get_full_variable(self, name, channel=None):
