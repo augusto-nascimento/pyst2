@@ -5,7 +5,7 @@
    :synopsis: FastAGI service for Asterisk
 
 Requires modified pyst2 to support reading stdin/out/err
- 
+
  Copyright 2011 VOICE1, LLC
  By: Ben Davis <ben@voice1-dot-me>
 
@@ -56,7 +56,7 @@ class FastAGI(SocketServer.StreamRequestHandler):
             sys.stderr.write(
                 """Could not open the socket.
                 Is someting else listening on this port?\n"""
-            )   
+            )
         except Exception as e:
             sys.stderr.write("""An unknown error: {}\n""".format(str(e)))
 
