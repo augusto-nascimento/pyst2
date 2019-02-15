@@ -744,6 +744,17 @@ class AGI:
         args = ','.join(map(str, args))
         return self.execute('EXEC', command, args)
 
+    def file_exists(self, file_path):
+        self.appexec(
+            'System', 'test -e {}'.format(file_path)
+        )
+        system_status = self.get_variable('SYSTEMSTATUS')
+
+        if system_status == 'SUCCESS':
+            return True
+        else:
+            return False
+
 
 if __name__ == '__main__':
     agi = AGI()
