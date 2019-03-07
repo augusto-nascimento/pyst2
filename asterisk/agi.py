@@ -632,11 +632,12 @@ class AGI:
 
         res, value = result['result']
         if res == '1':
-            if value[0] == '{':
-                try:
-                    value = json.loads(value)
-                except Exception:
-                    pass
+            if len(value) > 0:
+                if value[0] == '{':
+                    try:
+                        value = json.loads(value)
+                    except Exception:
+                        pass
         return value
 
     def get_full_variable(self, name, channel=None):
