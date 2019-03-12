@@ -140,6 +140,9 @@ class AGI:
                 default=str
             )
             string = string.replace('"', '\\"')
+        else:
+            string = ""
+
         if PY3:
             return ''.join(['"', string, '"'])
         else:
