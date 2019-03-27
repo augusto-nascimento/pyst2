@@ -140,6 +140,14 @@ class AGI:
                 default=str
             )
             string = string.replace('"', '\\"')
+        elif isinstance(string, list):
+            string = json.dumps(
+                string,
+                ensure_ascii=False,
+                separators=(',', ':'),
+                default=str
+            )
+            string = string.replace('"', '\\"')
         elif not string:
             string = ""
 
@@ -758,6 +766,10 @@ class AGI:
             return True
         else:
             return False
+
+    def set_language(self, language):
+        self.set_variable("CHANNEL(language)", language)
+        self.env['agi_language'] = language
 
 
 if __name__ == '__main__':
